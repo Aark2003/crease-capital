@@ -6,7 +6,7 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: node --import tsx server/index.ts
-    healthCheckPath: /api/auth/me
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
@@ -16,7 +16,3 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false
-    disk:
-      name: crease-capital-data
-      mountPath: /opt/render/project/src/data
-      sizeGB: 1
