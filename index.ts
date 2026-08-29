@@ -142,6 +142,6 @@ app.get('/api/notifications',auth,(req,res)=>res.json(db.prepare('SELECT * FROM 
 app.get('/api/dashboard',auth,(req,res)=>{ const season=db.prepare("SELECT * FROM seasons WHERE status='ACTIVE' ORDER BY id DESC LIMIT 1").get(); if(req.auth!.role==='ADMIN'){res.json({season,users:(db.prepare("SELECT COUNT(*) n FROM users WHERE role='USER' AND is_active=1").get() as any).n,players:(db.prepare('SELECT COUNT(*) n FROM players WHERE active=1').get() as any).n,pending:(db.prepare("SELECT COUNT(*) n FROM trades WHERE status IN ('PENDING','NEGOTIATING')").get() as any).n,completed:(db.prepare("SELECT COUNT(*) n FROM trades WHERE status='COMPLETED'").get() as any).n});}else res.json({season,calculation:calc(req.auth!.id),pending:(db.prepare("SELECT COUNT(*) n FROM trades WHERE counterparty=? AND status IN ('PENDING','NEGOTIATING')").get(req.auth!.id) as any).n}); });
 
 app.use((err:any,_req:Request,res:Response,_next:NextFunction)=>{console.error(err); res.status(400).json({error:err?.issues?.[0]?.message||err.message||'Something went wrong'});});
-if(process.env.NODE_ENV==='production'){app.use(express.static(path.join(root,'dist'))); app.get('*',(_req,res)=>res.sendFile(path.join(root,'dist','index.html')));}
+if(process.env.NODE_ENV==='production'){app.use(express.static(path.join(root,'dist'))); app.use((_req,res)=>res.sendFile(path.join(root,'dist','index.html')));}
 const port = Number(process.env.PORT || 4000);
 app.listen(port, '0.0.0.0',()=>console.log(`API ready on port ${port}`));
