@@ -94,6 +94,7 @@ app.post('/api/auth/login',(req,res)=>{
   const user:TokenUser={id:row.id,username:row.username,displayName:row.display_name,teamName:row.team_name,role:row.role};
   res.json({token:jwt.sign(user,secret,{expiresIn:'12h'}),user});
 });
+app.get('/api/health',(_req,res)=>res.json({ok:true,service:'crease-capital-api'}));
 app.get('/api/auth/me',auth,(req,res)=>res.json(req.auth));
 
 const calculationQuery=`SELECT u.id,u.username,u.display_name displayName,u.team_name teamName,ut.current_purse currentPurse,ut.expected_purse expectedPurse,ut.season_added seasonAdded,ut.winning_amount winningAmount,ut.trade_net tradeNet,(SELECT COALESCE(SUM(p.current_wage),0) FROM user_players up JOIN players p ON p.id=up.player_id WHERE up.user_id=u.id AND up.active=1) totalWages FROM users u JOIN user_teams ut ON ut.user_id=u.id WHERE u.id=?`;
