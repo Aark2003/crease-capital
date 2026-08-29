@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: crease-capital-api
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node --import tsx server/index.ts
+    healthCheckPath: /api/auth/me
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+    disk:
+      name: crease-capital-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
